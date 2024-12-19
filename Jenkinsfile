@@ -9,24 +9,21 @@ pipeline {
 
         stage('Setup .npmrc') { 
             steps {  
-                sh 'echo "http://192.168.56.3:8091/repository/npm-hosted/" > ~/.npmrc' 
-                sh 'echo "//http://192.168.56.3:8091/repository/npm-hosted/:_authToken=40d28221-0472-3dd3-821d-165b9538e22a" >> ~/.npmrc' 
+                sh 'echo "registry=https://registry.npmjs.org/" > ~/.npmrc' 
+                sh 'echo "//http://192.168.56.3:8091/repository/npm-hosted/:username=teste" >> ~/.npmrc' 
+                sh 'echo "//http://192.168.56.3:8091/repository/npm-hosted/:password=teste" >> ~/.npmrc'
             } 
         }
 
         stage('Update npm') { 
-            steps { 
-                sh 'npm config set registry https://registry.npmjs.org/' 
+            steps {  
                 sh 'sudo npm install -g npm@latest' 
-                sh 'npm config set registry http://192.168.56.3:8091/repository/npm-hosted/'
             } 
         } 
         
         stage('Install Dependencies') { 
             steps { 
-                sh 'npm config set registry https://registry.npmjs.org/' 
-                sh 'npm install' 
-                sh 'npm config set registry http://192.168.56.3:8091/repository/npm-hosted/'
+                sh 'npm install'
             } 
         } 
         
@@ -82,9 +79,8 @@ pipeline {
 
         stage('Publish npm Package') { 
             steps { 
-                sh 'echo "registry=https://registry.npmjs.org/" > ~/.npmrc' 
-                sh 'echo "//http://192.168.56.3:8091/repository/npm-hosted/:username=teste" >> ~/.npmrc' 
-                sh 'echo "//http://192.168.56.3:8091/repository/npm-hosted/:password=teste" >> ~/.npmrc'
+                sh 'npm config set registry http://192.168.56.3:8091/repository/npm-hosted/'
+                sh 'npm publish'
                 //script { 
                 //    withCredentials([usernamePassword(credentialsId: 'nexus-user', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) { 
                 //        sh 'npm set registry http://192.168.56.3:8091/repository/npm-hosted/' 
