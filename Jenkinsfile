@@ -8,10 +8,11 @@ pipeline {
     stages {
 
         stage('Setup .npmrc') { 
-            steps {  
+            steps {
                 sh 'echo "registry=https://registry.npmjs.org/" > ~/.npmrc' 
                 sh 'echo "//http://192.168.56.3:8091/repository/npm-hosted/:username=teste" >> ~/.npmrc' 
-                sh 'echo "//http://192.168.56.3:8091/repository/npm-hosted/:password=teste" >> ~/.npmrc'
+                sh 'echo "//http://192.168.56.3:8091/repository/npm-hosted/:password=$(echo -n teste | openssl base64)" >> ~/.npmrc'
+                sh 'echo "//http://192.168.56.3:8091/repository/npm-hosted/:email=teste@teste.com" >> ~/.npmrc'
             } 
         }
 
