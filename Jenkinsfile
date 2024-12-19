@@ -6,6 +6,25 @@ pipeline {
     }
 
     stages {
+
+        stage('Update npm') { 
+            steps { 
+                sh 'npm install -g npm@latest' 
+            } 
+        } 
+        
+        stage('Install Dependencies') { 
+            steps { 
+                sh 'npm install' 
+            } 
+        } 
+        
+        stage('Build Project') { 
+            steps { 
+                sh 'npm run build' 
+            } 
+        }
+
         stage('build docker image'){
         steps{
             sh 'docker build -t react-hello/app:${TAG} .'
