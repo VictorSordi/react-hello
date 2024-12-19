@@ -12,43 +12,31 @@ pipeline {
 
     stages {
 
-        stage('Setup .npmrc') { 
+         stage('Checkout') {
             steps {
-                sh 'echo "registry=http://192.168.56.3:8091/repository/npm-hosted/" > ~/.npmrc' 
-                //sh 'echo "//http://192.168.56.3:8091/repository/npm-hosted/:username=teste" >> ~/.npmrc' 
-                //sh 'echo "//http://192.168.56.3:8091/repository/npm-hosted/:password=$(echo -n teste | openssl base64)" >> ~/.npmrc'
-                //sh 'echo "//http://192.168.56.3:8091/repository/npm-hosted/:email=teste@teste.com" >> ~/.npmrc'
-            } 
+                checkout scm
+            }
         }
 
-        stage('npm adduser') { 
-            steps { 
-                script { 
-                    //sh 'echo -e "teste\nteste\nteste@teste.com" | npm adduser --registry=http://192.168.56.3:8091/repository/npm-hosted/' 
-                    sh 'echo ${NPM_USER}'
-                    sh 'echo ${NPM_PASS}'
-                    sh 'echo ${NPM_EMAIL}'
-                    sh 'npm adduser --registry=${NEXUS_URL}'
-                } 
-            } 
+        stage('Install dependencies') {
+            steps {
+                script {
+                    sh 'npm install'
+                }
+            }
         }
 
-        stage('Update npm') { 
-            steps {  
-                sh 'sudo npm install -g npm@latest' 
-            } 
-        } 
-        
-        stage('Install Dependencies') { 
-            steps { 
-                sh 'npm install'
-            } 
-        } 
-        
-        stage('Build Project') { 
-            steps { 
-                sh 'npm run build' 
-            } 
+        stage('Publish to Nexus') {
+            steps {
+                script {
+                    sh '''
+                    npm config set registry $NEXUS_URL
+                    npm config set //192.168.56.3:8091/repository/npm-hosted/:_authToken=$NEXUS_PASSWORD
+                    '''
+
+                    sh 'npm publish'
+                }
+            }
         }
 
         stage('build docker image'){
