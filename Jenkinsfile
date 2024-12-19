@@ -82,9 +82,9 @@ pipeline {
 
         stage('Publish npm Package') { 
             steps { 
-                sh 'npm set registry http://192.168.56.3:8091/repository/npm-hosted/' 
-                sh 'npm login -u teste -p teste -r http://192.168.56.3:8091/repository/npm-hosted/' 
-                sh 'npm publish' 
+                sh 'echo "registry=https://registry.npmjs.org/" > ~/.npmrc' 
+                sh 'echo "//http://192.168.56.3:8091/repository/npm-hosted/:username=teste" >> ~/.npmrc' 
+                sh 'echo "//http://192.168.56.3:8091/repository/npm-hosted/:password=teste" >> ~/.npmrc'
                 //script { 
                 //    withCredentials([usernamePassword(credentialsId: 'nexus-user', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) { 
                 //        sh 'npm set registry http://192.168.56.3:8091/repository/npm-hosted/' 
