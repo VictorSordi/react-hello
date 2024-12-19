@@ -17,7 +17,9 @@ pipeline {
         
         stage('Install Dependencies') { 
             steps { 
+                sh 'npm config set registry https://registry.npmjs.org/' 
                 sh 'npm install' 
+                sh 'npm config set registry http://192.168.56.3:8091/repository/npm-hosted/'
             } 
         } 
         
