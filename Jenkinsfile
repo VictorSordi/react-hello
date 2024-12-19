@@ -21,11 +21,14 @@ pipeline {
         stage('Install dependencies') {
             steps {
                 script {
-                    writeFile file: '.npmrc', text: """
-                    //192.168.56.3:8091/repository/npm-hosted/:_authToken=${NEXUS_PASSWORD}
-                    """
-                    
-                    sh 'npm install'
+                   withCredentials([usernamePassword(credentialsId: 'nexus-teste', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASSWORD')]) {
+                        // Criar o arquivo .npmrc com as credenciais de autenticação
+                        writeFile file: '.npmrc', text: """
+                        //192.168.56.3:8091/repository/npm-hosted/:_authToken=${NEXUS_PASSWORD}
+                        """
+
+                        sh 'npm install'
+                   }
                 }
             }
         }
