@@ -25,7 +25,10 @@ pipeline {
             steps { 
                 script { 
                     //sh 'echo -e "teste\nteste\nteste@teste.com" | npm adduser --registry=http://192.168.56.3:8091/repository/npm-hosted/' 
-                    sh 'echo -e "${NPM_USER}\n${NPM_PASS}\n${NPM_EMAIL}" | npm adduser --registry=${NEXUS_URL}'
+                    sh 'echo ${NPM_USER}'
+                    sh 'echo ${NPM_PASS}'
+                    sh 'echo ${NPM_EMAIL}'
+                    sh 'npm adduser --registry=${NEXUS_URL}'
                 } 
             } 
         }
