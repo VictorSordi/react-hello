@@ -9,10 +9,18 @@ pipeline {
 
         stage('Setup .npmrc') { 
             steps {
-                sh 'echo "registry=https://registry.npmjs.org/" > ~/.npmrc' 
-                sh 'echo "//http://192.168.56.3:8091/repository/npm-hosted/:username=teste" >> ~/.npmrc' 
-                sh 'echo "//http://192.168.56.3:8091/repository/npm-hosted/:password=$(echo -n teste | openssl base64)" >> ~/.npmrc'
-                sh 'echo "//http://192.168.56.3:8091/repository/npm-hosted/:email=teste@teste.com" >> ~/.npmrc'
+                sh 'echo "registry=http://192.168.56.3:8091/repository/npm-hosted/" > ~/.npmrc' 
+                //sh 'echo "//http://192.168.56.3:8091/repository/npm-hosted/:username=teste" >> ~/.npmrc' 
+                //sh 'echo "//http://192.168.56.3:8091/repository/npm-hosted/:password=$(echo -n teste | openssl base64)" >> ~/.npmrc'
+                //sh 'echo "//http://192.168.56.3:8091/repository/npm-hosted/:email=teste@teste.com" >> ~/.npmrc'
+            } 
+        }
+
+        stage('npm adduser') { 
+            steps { 
+                script { 
+                    sh 'echo -e "teste\nteste\nteste@teste.com" | npm adduser --registry=http://192.168.56.3:8091/repository/npm-hosted/' 
+                } 
             } 
         }
 
@@ -80,7 +88,6 @@ pipeline {
 
         stage('Publish npm Package') { 
             steps { 
-                sh 'npm config set registry http://192.168.56.3:8091/repository/npm-hosted/'
                 sh 'npm publish'
                 //script { 
                 //    withCredentials([usernamePassword(credentialsId: 'nexus-user', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) { 
