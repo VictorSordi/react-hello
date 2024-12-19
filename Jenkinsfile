@@ -50,6 +50,18 @@ pipeline {
             }
         }
 
+        stage('Publish npm Package') { 
+            steps { 
+                script { 
+                    withCredentials([usernamePassword(credentialsId: 'nexus-user', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) { 
+                        sh 'npm set registry http://192.168.56.3:8091/repository/npm-hosted/' 
+                        sh 'npm login -u $USERNAME -p $PASSWORD -r http://192.168.56.3:8091/repository/npm-hosted/' 
+                        sh 'npm publish' 
+                    } 
+                }
+            }
+        }
+
         stage('Upload docker image'){
             steps{
                 script {
