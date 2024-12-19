@@ -3,6 +3,11 @@ pipeline {
 
     environment {
         TAG = sh(script: 'git describe --abbrev=0',,returnStdout: true).trim()
+
+        NEXUS_URL = 'http://192.168.56.3:8091/repository/npm-hosted/' 
+        NPM_USER = 'teste' 
+        NPM_PASS = 'teste' 
+        NPM_EMAIL = 'teste@teste.com'
     }
 
     stages {
@@ -19,7 +24,8 @@ pipeline {
         stage('npm adduser') { 
             steps { 
                 script { 
-                    sh 'echo -e "teste\nteste\nteste@teste.com" | npm adduser --registry=http://192.168.56.3:8091/repository/npm-hosted/' 
+                    //sh 'echo -e "teste\nteste\nteste@teste.com" | npm adduser --registry=http://192.168.56.3:8091/repository/npm-hosted/' 
+                    sh 'echo -e "${NPM_USER}\n${NPM_PASS}\n${NPM_EMAIL}" | npm adduser --registry=${NEXUS_URL}'
                 } 
             } 
         }
