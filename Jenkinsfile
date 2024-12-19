@@ -7,6 +7,13 @@ pipeline {
 
     stages {
 
+        stage('Setup .npmrc') { 
+            steps {  
+                sh 'echo "registry=${NEXUS_URL}" > ~/.npmrc' 
+                sh 'echo "//http://192.168.56.3:8091/repository/npm-hosted/:_authToken=40d28221-0472-3dd3-821d-165b9538e22a" >> ~/.npmrc' 
+            } 
+        }
+
         stage('Update npm') { 
             steps { 
                 sh 'npm config set registry https://registry.npmjs.org/' 
