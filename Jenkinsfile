@@ -10,7 +10,7 @@ pipeline {
         stage('Update npm') { 
             steps { 
                 sh 'npm config set registry https://registry.npmjs.org/' 
-                sh 'npm install -g npm@latest' 
+                sh 'sudo npm install -g npm@latest' 
                 sh 'npm config set registry http://192.168.56.3:8091/repository/npm-hosted/'
             } 
         } 
