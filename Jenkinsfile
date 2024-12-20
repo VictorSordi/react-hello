@@ -4,11 +4,7 @@ pipeline {
     environment {
         TAG = sh(script: 'git describe --abbrev=0',,returnStdout: true).trim()
 
-        NEXUS_URL = 'http://192.168.56.3:8091/repository/npm-hosted/' 
-        NPM_USER = 'teste' 
-        NPM_AUTH_TOKEN = 'fe37e8a9-cbed-3e01-81ae-261fa4d2aa20' 
-        NPM_EMAIL = 'teste@teste.com'
-        NPMRC_PATH = '.npmrc'
+        NEXUS_URL = 'http://192.168.56.3:8091/repository/npm-hosted/'
     }
 
     stages {
@@ -21,29 +17,13 @@ pipeline {
 
         stage('Install dependencies') {
             steps {
-                script {
-                   withCredentials([usernamePassword(credentialsId: 'nexus-teste', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASSWORD')]) {
-                        // Criar o arquivo .npmrc com as credenciais de autenticação
-                        writeFile file: '.npmrc', text: """
-                        //192.168.56.3:8091/repository/npm-hosted/:_authToken=${NPM_AUTH_TOKEN}
-                        """
-
-                        sh 'npm install'
-                        sh 'cat .npmrc'
-                   }
-                }
+                sh 'npm install'
             }
         }
 
         stage('build docker image'){
         steps{
             sh 'docker build -t react-hello/app:${TAG} .'
-            }
-        }
-    
-        stage ('deploy docker compose'){
-        steps{
-            sh 'docker compose up --build -d'
             }
         }
 
@@ -69,25 +49,6 @@ pipeline {
             steps{
                 timeout(time: 5, unit: 'MINUTES') {
                     waitForQualityGate abortPipeline: true
-                }
-            }
-        }
-
-        stage('Shutdown docker containers') {
-            steps{
-                sh 'docker compose down'
-            }
-        }
-
-        stage('Publish to Nexus') {
-            steps {
-                script {
-                    sh '''
-                    npm config set registry $NEXUS_URL
-                    npm config set //192.168.56.3:8091/repository/npm-hosted/:_authToken=$NPM_AUTH_TOKEN
-                    '''
-
-                    sh 'npm publish'
                 }
             }
         }
