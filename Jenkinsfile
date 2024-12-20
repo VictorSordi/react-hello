@@ -6,8 +6,9 @@ pipeline {
 
         NEXUS_URL = 'http://192.168.56.3:8091/repository/npm-hosted/' 
         NPM_USER = 'teste' 
-        NPM_PASS = 'teste' 
+        NPM_AUTH_TOKEN = 'dGVzdGU=' 
         NPM_EMAIL = 'teste@teste.com'
+        NPMRC_PATH = '.npmrc'
     }
 
     stages {
@@ -24,7 +25,7 @@ pipeline {
                    withCredentials([usernamePassword(credentialsId: 'nexus-teste', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASSWORD')]) {
                         // Criar o arquivo .npmrc com as credenciais de autenticação
                         writeFile file: '.npmrc', text: """
-                        //192.168.56.3:8091/repository/npm-hosted/:_authToken=${NEXUS_PASSWORD}
+                        //192.168.56.3:8091/repository/npm-hosted/:_authToken=${NPM_AUTH_TOKEN}
                         """
 
                         sh 'npm install'
@@ -82,7 +83,7 @@ pipeline {
                 script {
                     sh '''
                     npm config set registry $NEXUS_URL
-                    npm config set //192.168.56.3:8091/repository/npm-hosted/:_authToken=$NEXUS_PASS
+                    npm config set //192.168.56.3:8091/repository/npm-hosted/:_authToken=$NPM_AUTH_TOKEN
                     '''
 
                     sh 'npm publish'
