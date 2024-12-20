@@ -6,7 +6,7 @@ pipeline {
 
         NEXUS_URL = 'http://192.168.56.3:8091/repository/npm-hosted/' 
         NPM_USER = 'teste' 
-        NPM_AUTH_TOKEN = 'dGVzdGU=' 
+        NPM_AUTH_TOKEN = 'fe37e8a9-cbed-3e01-81ae-261fa4d2aa20' 
         NPM_EMAIL = 'teste@teste.com'
         NPMRC_PATH = '.npmrc'
     }
@@ -29,6 +29,7 @@ pipeline {
                         """
 
                         sh 'npm install'
+                        sh 'cat .npmrc'
                    }
                 }
             }
