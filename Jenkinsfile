@@ -3,8 +3,6 @@ pipeline {
 
     environment {
         TAG = sh(script: 'git describe --abbrev=0',,returnStdout: true).trim()
-
-        NEXUS_URL = 'http://192.168.56.3:8091/repository/npm-hosted/'
     }
 
     stages {
