@@ -15,6 +15,9 @@ pipeline {
 
         stage('Install dependencies') {
             steps {
+                sh """
+                    echo "registry=http://localhost:8091/repository/npm-public/" > ~/.npmrc
+                """
                 sh 'npm install'
             }
         }
